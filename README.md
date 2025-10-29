@@ -19,7 +19,7 @@ The application uses an **in-memory user list** for demonstration purposes. You 
 ## Running the Application
 
 1. Open the solution in **Visual Studio** or your preferred IDE.
-2. Start both the **API** and **UI** projects simultaneously.
+2. Start first **API** project then, **UI** project.
 3. The **UI** will be available at `http://localhost:5276`.
 
 ---
