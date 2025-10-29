@@ -29,7 +29,7 @@ The application uses an **in-memory user list** for demonstration purposes. You 
 - 👨‍🏫 **Teacher login**: Upload and process exam XML files  
 - 🎓 **Student login**: View individual exam results  
 - 📊 **XML-based exam parsing** and score calculation  
-- 💾 **SQLite or in-memory database** support  
+- 💾 **SQLite for exams & student's task** support  
 - 🧩 **Clean Architecture layers** for easy maintenance and testing  
 - 🖥️ **Blazor Server UI** for smooth interactive experience  
 
