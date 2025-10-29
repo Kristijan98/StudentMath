@@ -5,6 +5,14 @@ It demonstrates clean architecture principles — separating logic into Core, Da
 
 ---
 
+
+## Running the Application
+1. Clone or download this repository: ```https://github.com/Kristijan98/StudentMath```
+1. Open the solution in **Visual Studio** or your preferred IDE.
+2. Start first **API** project then, **UI** project.
+3. The **UI** will be available at `http://localhost:5276`.
+   
+---
 ## Authentication
 
 The application uses an **in-memory user list** for demonstration purposes. You can log in as:
@@ -14,13 +22,6 @@ The application uses an **in-memory user list** for demonstration purposes. You 
 
 > Sample users are already included in the database. After starting the app, access it at [http://localhost:5276](http://localhost:5276).
 
----
-
-## Running the Application
-1. Clone or download this repository: ```https://github.com/Kristijan98/StudentMath```
-1. Open the solution in **Visual Studio** or your preferred IDE.
-2. Start first **API** project then, **UI** project.
-3. The **UI** will be available at `http://localhost:5276`.
 
 ---
 
