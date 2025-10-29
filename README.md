@@ -31,7 +31,9 @@ The application uses an **in-memory user list** for demonstration purposes. You 
 - 📊 **XML-based exam parsing** and score calculation  
 - 💾 **SQLite for exams & student's task** support  
 - 🧩 **Clean Architecture layers** for easy maintenance and testing  
-- 🖥️ **Blazor Server UI** for smooth interactive experience  
+- 🖥️ **Blazor Server UI** for smooth interactive experience
+- ⚙️ **Independent processor** for mathematical operations and score calculations
+
 
 ---
 
