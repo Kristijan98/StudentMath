@@ -1,0 +1,33 @@
+﻿<nav>
+    <ul>
+        @if (!AuthService.IsLoggedIn)
+        {
+            <li><a href="/login">Login</a></li>
+        }
+        else
+        {
+            <li><button @onclick="Logout">Logout</button></li>
+        }
+    </ul>
+</nav>
+
+@code {
+    [Inject] private AuthServiceModel AuthService { get; set; } = default!;
+    [Inject] private NavigationManager Navigation { get; set; } = default!;
+
+    protected override void OnInitialized()
+    {
+        AuthService.OnAuthStateChanged += StateHasChanged;
+    }
+
+    private void Logout()
+    {
+        AuthService.Logout();
+        Navigation.NavigateTo("/login", forceLoad: true);
+    }
+
+    public void Dispose()
+    {
+        AuthService.OnAuthStateChanged -= StateHasChanged;
+    }
+}

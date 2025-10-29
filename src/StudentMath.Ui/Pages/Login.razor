@@ -1,0 +1,69 @@
+﻿@page "/login"
+@using StudentMath.Ui.Helper
+@inject AuthServiceModel AuthService
+@inject NavigationManager Navigation
+@inject IHttpClientFactory HttpClientFactory
+
+
+
+@if (!AuthService.IsLoggedIn)
+{
+    <div>
+        <h3>Login</h3>
+        @if (!string.IsNullOrEmpty(Error))
+        {
+            <p style="color:red">@Error</p>
+        }
+
+        <input placeholder="Username" @bind="Username" />
+        <input placeholder="Password" type="password" @bind="Password" />
+        <button @onclick="LoginUser">Login</button>
+    </div>
+}
+else
+{
+    <p>You are logged in as <b>@AuthService.StudentXmlId</b> (@AuthService.Role)</p>
+}
+
+@code {
+    private string Username = "";
+    private string Password = "";
+    private string Error = "";
+
+    private async Task LoginUser()
+    {
+        var http = HttpClientFactory.CreateClient("API");
+        var response = await http.PostAsJsonAsync("api/auth/login", new { Username, Password });
+
+        if (!response.IsSuccessStatusCode)
+        {
+            Error = "Invalid username or password.";
+            return;
+        }
+
+        var result = await response.Content.ReadFromJsonAsync<LoginResponse>();
+        if (result == null) { Error = "Unexpected response from server."; return; }
+
+        var username = JwtParser.GetUsernameFromToken(result.Token);
+        var role = JwtParser.GetRoleFromToken(result.Token);
+
+        AuthService.SetAuth(result.Token, role, username);
+
+        if (role == "Teacher")
+            Navigation.NavigateTo("/teacher-dashboard", forceLoad: true);
+        else
+            Navigation.NavigateTo("/student-results", forceLoad: true);
+    }
+
+
+    private async Task Logout()
+    {
+        AuthService.Logout();
+        Navigation.NavigateTo("/login", forceLoad: true);
+    }
+
+    public class LoginResponse
+    {
+        public string Token { get; set; } = string.Empty;
+    }
+}

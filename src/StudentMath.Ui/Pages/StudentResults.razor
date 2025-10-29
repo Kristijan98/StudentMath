@@ -1,0 +1,89 @@
+﻿@page "/student-results"
+@inject IHttpClientFactory HttpClientFactory
+@inject AuthServiceModel AuthService
+
+<h3>My Exam Results</h3>
+
+@if (string.IsNullOrEmpty(AuthService.Token))
+{
+    <p>You must be logged in to see your results.</p>
+}
+else if (AuthService.Role != "Student")
+{
+    <p>You must be a student to view this page.</p>
+}
+else if (Results == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    @foreach (var exam in Results)
+    {
+        <h4>Exam: @exam.ExamId</h4>
+        <p>
+            Total Tasks: @exam.TotalTasks |
+            Correct: @exam.CorrectTasks |
+            Percentage: @exam.Percentage% |
+            Grade: @exam.Grade
+        </p>
+        <ul>
+            @foreach (var task in exam.Tasks)
+            {
+                <li>
+                    @task.Expression = @task.ActualResult
+                    (@(task.IsCorrect ? "✅ Correct" : "❌ Wrong"))
+                </li>
+            }
+        </ul>
+    }
+}
+
+@code {
+    private List<ExamResultDtoModel>? Results;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (AuthService.Role != "Student" || string.IsNullOrEmpty(AuthService.StudentXmlId))
+            return;
+
+        var http = HttpClientFactory.CreateClient("API");
+        http.DefaultRequestHeaders.Authorization =
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", AuthService.Token);
+
+        Results = await http.GetFromJsonAsync<List<ExamResultDtoModel>>(
+            $"api/exam/{AuthService.StudentXmlId}");
+    }
+
+    public class TaskResultDtoModel
+    {
+        public string Expression { get; set; } = string.Empty;
+        public double ExpectedResult { get; set; }
+        public double ActualResult { get; set; }
+        public bool IsCorrect { get; set; }
+    }
+
+    public class ExamResultDtoModel
+    {
+        public string StudentId { get; set; } = string.Empty;
+        public int ExamId { get; set; }
+        public List<TaskResultDtoModel> Tasks { get; set; } = new();
+        public int TotalTasks => Tasks.Count;
+        public int CorrectTasks => Tasks.Count(t => t.IsCorrect);
+        public double Percentage => TotalTasks == 0 ? 0 : Math.Round((double)CorrectTasks / TotalTasks * 100, 2);
+        public string Grade
+        {
+            get
+            {
+                return Percentage switch
+                {
+                    >= 90 => "A",
+                    >= 80 => "B",
+                    >= 70 => "C",
+                    >= 60 => "D",
+                    _ => "F"
+                };
+            }
+        }
+    }
+}
